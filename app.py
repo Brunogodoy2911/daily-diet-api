@@ -5,7 +5,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "your_secret_key"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///daily_diet.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://admin:admin123@127.0.0.1:3306/daily_diet"
 
 db.init_app(app)
 
@@ -67,7 +67,7 @@ def update_meal(meal_id):
     
     try:
         meal.name = data["name"]
-        meal.description = data.get["description"]
+        meal.description = data.get("description")
         meal.datetime = datetime.fromisoformat(data["datetime"])
         meal.is_diet = data["is_diet"]
 
@@ -94,4 +94,8 @@ def delete_meal(meal_id):
     return jsonify({"message": "Refeição deletada com sucesso!"}), 204
     
 if __name__ == "__main__":
+
+    with app.app_context():
+        db.create_all()
+
     app.run(debug=True)

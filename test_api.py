@@ -38,7 +38,9 @@ def test_get_all_meals():
     assert "is_diet" in first_meal
 
 def test_get_meal_by_id():
-  response = requests.get(f"{BASE_URL}/meals/1")
+  meal_id = meals[0]
+
+  response = requests.get(f"{BASE_URL}/meals/{meal_id}")
   assert response.status_code == 200
   response_json = response.json()
   
@@ -51,10 +53,13 @@ def test_get_meal_by_id():
 def test_update_meal():
   if meals:
     meal_id = meals[0]
+
+    now_sem_micro = datetime.now().replace(microsecond=0)
+    
     payload = {
       "name": "Pão Atualizado",
       "description": "Pão Integral Atualizado",
-      "datetime": datetime.now().isoformat(),
+      "datetime": now_sem_micro.isoformat(),
       "is_diet": False
     }
     response = requests.put(f"{BASE_URL}/meals/{meal_id}", json=payload)
@@ -74,7 +79,7 @@ def test_delete_meal():
   if meals:
     meal_id = meals[0]
     response = requests.delete(f"{BASE_URL}/meals/{meal_id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     response = requests.get(f"{BASE_URL}/meals/{meal_id}")
     assert response.status_code == 404
